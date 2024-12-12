@@ -1,0 +1,16 @@
+Game can StartGame, StopGame
+Player can control HeavySpaceShip, LightSpaceShip
+HeavySpaceShip have 10
+LightSpaceShip have 5
+HeavySpaceShip, LightSpaceShip can StartMove, StopMove, StartRotate, StopRotate, RocketLaunch, BeDestroyed, Respawn
+RocketLaunch launch Rocket
+Rocket can StartMove, StopMove, BeDestroyed
+StartMove include MoveCommand, Move
+MoveCommand predates Move
+Move include BurnFuel
+StartRotate include RotateCommand, Rotate
+RotateCommand predates Rotate
+Rotate include BurnFuel
+Game must CheckCollision while StartMove
+CheckCollision predates BeDestroyed
+BeDestroyed predates Respawn

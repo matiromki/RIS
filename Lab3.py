@@ -2,7 +2,6 @@ class Elevator:
     def __init__(self, floor):
         self.floor = floor
         self.steps = 0
-        self.startOrEnd = 0
         self.doorState = False
         self.lastCommand = "close_the_door"
 
@@ -24,18 +23,10 @@ class Elevator:
 
     def open_the_door(self):
         self.doorState = True
-        self.startOrEnd = 1
         self.lastCommand = "open_the_door"
         return "Open the door"
 
     def close_the_door(self):
-        return self.close()
-    
-    def close_the_door_and_go(self):
-        self.startOrEnd = 1
-        return self.close()
-    
-    def close(self):
         self.doorState = False
         self.lastCommand = "close_the_door"
         return "Close the door"
@@ -54,8 +45,6 @@ class Elevator:
         ("go_up", "open_the_door"): open_the_door,
         ("go_down", "open_the_door"): open_the_door,
 
-        ("open_the_door", "open_the_door"): close_the_door_and_go,
-
         ("open_the_door", "go_up"): close_the_door,
         ("close_the_door","go_up"): go_up,
         ("go_up","go_up"): go_up, 
@@ -65,7 +54,7 @@ class Elevator:
         ("go_down","go_down"): go_down, 
     }
 
-def CreateSpace(floors = 4, FloorForFirstEl = 1, FloorForSecondEl = 3):
+def create_space(floors = 4, FloorForFirstEl = 1, FloorForSecondEl = 3):
     first_or_second = [[1] * floors for _ in range(floors)]
 
     actions = {} 
@@ -81,11 +70,18 @@ def CreateSpace(floors = 4, FloorForFirstEl = 1, FloorForSecondEl = 3):
     elevators = [Elevator(FloorForFirstEl), Elevator(FloorForSecondEl)]
     return actions, first_or_second, elevators
 
+def move_elevator_to_floor(elevator, target_floor, actions):
+    while (elevator.floor != target_floor) or (not elevator.open_or_not()):
+        print(f"|{elevator.floor}|", end=' ')
+        action = actions.get((elevator.floor, target_floor)) 
+        result = elevator.analyze(action) 
+        print(result, end=' ')
+
 calls = (
     (2, 4), (1, 2), (3, 1), (2, 2), (1, 3), 
     (4, 1), (3, 2), (1, 4), (2, 1), (3, 3)
 )
-actions, first_or_second, elevators = CreateSpace()
+actions, first_or_second, elevators = create_space()
 
 for call in calls:
     n, m = abs(call[0] - elevators[0].floor), abs(call[0] - elevators[1].floor)
@@ -94,9 +90,7 @@ for call in calls:
 
     print(f'Лифт #{num+1} С этажа №{call[0]} на этаж №{call[1]}', end = '\n\t')
 
-    while (elevators[num].floor != call[1]) or (not elevators[num].open_or_not()):
-        action = actions.get((elevators[num].floor, call[elevators[num].startOrEnd]))
-        result = elevators[num].analyze(action)
-        print(f"|{elevators[num].floor}| {result}", end = ' ')
+    move_elevator_to_floor(elevators[num], call[0], actions)
+    move_elevator_to_floor(elevators[num], call[1], actions)
 
     print(f'\n\tЭтажей пройдено -- {elevators[num].steps} --')

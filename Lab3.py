@@ -6,7 +6,6 @@ class Elevator:
         self.lastCommand = "close_the_door"
 
     def default(self):
-        self.end = 0
         self.steps = 0
         
     def go_up(self):

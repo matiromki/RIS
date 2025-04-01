@@ -122,7 +122,7 @@ transitions = {
     45: ['; ):', 13, 0, 0, 0, 1],
     46: ['):', 47, 0, 0, 1, 1],
     47: ['int bool char', 16, 0, 0, 0, 1],
-    48: ['int bool char', 49, 0, 0, 1, 1],
+    48: ['var:', 49, 0, 0, 1, 1],
     49: ['int bool char', 16, 0, 0, 0, 1],
     50: ['int bool char', -1, 1, 0, 1, 1],
     51: ['&& ', 52, 0, 0, 1, 1],
@@ -130,7 +130,6 @@ transitions = {
     53: ['&& * / + - ) end', -1, 1, 0, 0, 1]
 }
 
-# Запуск парсера
 input_expression = "( 5 ) + 1"
 tokenizer_instance = Tokenizer(input_expression)
 tokens = tokenizer_instance.tokens

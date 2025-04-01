@@ -7,9 +7,9 @@ class Tokenizer:
         reserved_symbols = {";", ")", "(", "&&", "||", "true", "false", "*", "/", "+", "-", "int", "bool", "char", "end", "const", "function"}
         words = input_string.split()
         return [self.get_token_type(word, reserved_symbols) for word in words] + ["end"]
-
+    
     def get_token_type(self, word, reserved_symbols):
-        return {True: "const", False: "var:"}.get(word.isdigit(), word if word in reserved_symbols else "var:")
+        return ("const" * word.isdigit() or "var:" * (word not in reserved_symbols) or word)
 
     def current_token(self):
         return self.tokens[self.current_position] if self.current_position < len(self.tokens) else None
@@ -34,6 +34,7 @@ class StateHandler:
         self.valid_tokens = valid_tokens
 
     def execute(self, action):
+        print(f"Текущий токен: {self.token}, состояние: {self.current_state}, выполняем: {action}")
         return {
             "handle_0_0_0_0": lambda: self.next_state,
             "handle_0_0_0_1": lambda: self.tokenizer.raise_error(self.token, self.valid_tokens) or self.next_state,
@@ -42,7 +43,6 @@ class StateHandler:
             "handle_1_0_0_1": lambda: self.stack.pop() if self.stack else self.next_state,
             "handle_1_0_1_1": lambda: self.tokenizer.accept(self.token) or (self.stack.pop() if self.stack else self.next_state)
         }[action]()
-
 
 class LL1:
     def __init__(self, transition_table):
